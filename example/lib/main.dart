@@ -31,7 +31,7 @@ class _HomeViewState extends State<HomeView> {
       body: Center(
         child: ElevatedButton(
             onPressed: () async {
-              final result = await showNumberPad(context: context);
+              final result = await showNumberPad(context, initialValue: _value);
               setState(() {
                 _value = result;
               });

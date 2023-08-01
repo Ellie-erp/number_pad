@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 /// Show a number pad dialog.
-Future<num?> showNumberPad({
-  required BuildContext context,
+Future<num?> showNumberPad(
+  BuildContext context, {
   num? initialValue,
 }) {
   return showDialog(
