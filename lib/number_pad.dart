@@ -123,6 +123,15 @@ class _NumberPadState extends State<NumberPad> {
   }
 
   @override
+  void dispose() {
+    controller.dispose();
+    keyboardFocusNode.dispose();
+    inputFocusNode.dispose();
+    inputFocusNode.removeListener(() {});
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     /// Constrain the size of the dialog.
     return ConstrainedBox(
