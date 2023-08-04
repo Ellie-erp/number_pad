@@ -6,7 +6,9 @@ import 'package:flutter/services.dart';
 /// Show a number pad dialog.
 Future<num?> showNumberPad(
   BuildContext context, {
+  FocusNode? focusNode,
   num? initialValue,
+  String? hintText,
 }) {
   return showDialog(
       context: context,
@@ -17,7 +19,9 @@ Future<num?> showNumberPad(
               child: Padding(
                   padding: const EdgeInsets.all(20),
                   child: NumberPad(
+                    focusNode: focusNode,
                     initialValue: initialValue,
+                    hintText: hintText,
                   )),
             ));
       });
@@ -25,10 +29,12 @@ Future<num?> showNumberPad(
 
 /// A number pad dialog.
 class NumberPad extends StatefulWidget {
-  const NumberPad({super.key, this.focusNode, this.initialValue});
+  const NumberPad(
+      {super.key, this.focusNode, this.initialValue, this.hintText});
 
   final FocusNode? focusNode;
   final num? initialValue;
+  final String? hintText;
 
   @override
   State<NumberPad> createState() => _NumberPadState();
@@ -171,7 +177,7 @@ class _NumberPadState extends State<NumberPad> {
                   textAlign: TextAlign.center,
                   decoration: InputDecoration(
                       border: InputBorder.none,
-                      hintText: '0',
+                      hintText: widget.hintText ?? '0',
                       hintStyle: const TextStyle(fontSize: 50),
                       suffixIconConstraints:
                           BoxConstraints.tight(const Size(40, 40)),
