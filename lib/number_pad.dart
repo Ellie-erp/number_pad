@@ -166,28 +166,32 @@ class _NumberPadState extends State<NumberPad> {
           child: Column(
             children: [
               Expanded(
-                child: TextField(
-                  focusNode: inputFocusNode,
-                  controller: controller,
-                  inputFormatters: [
-                    /// Only allow numbers and one dot.
-                    FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
-                  ],
-                  style: const TextStyle(fontSize: 50),
-                  textAlign: TextAlign.center,
-                  decoration: InputDecoration(
+                child: Row(children: [
+                  Expanded(
+                      child: TextField(
+                    focusNode: inputFocusNode,
+                    controller: controller,
+                    inputFormatters: [
+                      /// Only allow numbers and one dot.
+                      FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
+                    ],
+                    style: const TextStyle(fontSize: 50),
+                    textAlign: TextAlign.center,
+                    decoration: InputDecoration(
                       border: InputBorder.none,
                       hintText: widget.hintText ?? '0',
                       hintStyle: const TextStyle(fontSize: 50),
                       suffixIconConstraints:
                           BoxConstraints.tight(const Size(40, 40)),
-                      suffixIcon: IconButton(
-                          onPressed: pop,
-                          icon: const Icon(
-                            Icons.check,
-                            size: 40,
-                          ))),
-                ),
+                    ),
+                  )),
+                  IconButton(
+                      onPressed: pop,
+                      icon: const Icon(
+                        Icons.check,
+                        size: 40,
+                      ))
+                ]),
               ),
 
               /// Generate the number buttons.
