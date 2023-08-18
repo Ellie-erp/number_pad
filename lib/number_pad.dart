@@ -9,6 +9,7 @@ Future<num?> showNumberPad(
   FocusNode? focusNode,
   num? initialValue,
   String? hintText,
+  BoxConstraints? constraints,
 }) {
   return showDialog(
       context: context,
@@ -27,14 +28,22 @@ Future<num?> showNumberPad(
       });
 }
 
+const _constraints = BoxConstraints(maxWidth: 500, maxHeight: 500);
+
 /// A number pad dialog.
 class NumberPad extends StatefulWidget {
-  const NumberPad(
-      {super.key, this.focusNode, this.initialValue, this.hintText});
+  const NumberPad({
+    super.key,
+    this.focusNode,
+    this.initialValue,
+    this.hintText,
+    this.constraints = _constraints,
+  });
 
   final FocusNode? focusNode;
   final num? initialValue;
   final String? hintText;
+  final BoxConstraints? constraints;
 
   @override
   State<NumberPad> createState() => _NumberPadState();
@@ -45,6 +54,7 @@ class _NumberPadState extends State<NumberPad> {
       TextEditingController(text: widget.initialValue?.toString());
   late final keyboardFocusNode = widget.focusNode ?? FocusNode();
   final inputFocusNode = FocusNode();
+  late num? _initialValue = widget.initialValue;
 
   @override
   void initState() {
@@ -61,13 +71,23 @@ class _NumberPadState extends State<NumberPad> {
     });
   }
 
+  clearInitialValue() {
+    if (_initialValue != null) {
+      controller.text = '';
+      _initialValue = null;
+    }
+  }
+
   /// Add a number to the text field.
   addNumber(num value) {
+    clearInitialValue();
     controller.text += value.toString();
   }
 
   /// Add a dot to the text field.
   addDot() {
+    clearInitialValue();
+
     /// If the text field is empty, add a zero before the dot.
     if (controller.text.isEmpty) {
       controller.text += '0';
@@ -141,7 +161,7 @@ class _NumberPadState extends State<NumberPad> {
   Widget build(BuildContext context) {
     /// Constrain the size of the dialog.
     return ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 500, maxHeight: 500),
+      constraints: _constraints,
       child: KeyboardListener(
           focusNode: keyboardFocusNode,
           onKeyEvent: (value) {
