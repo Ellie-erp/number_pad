@@ -164,24 +164,26 @@ class _NumberPadState extends State<NumberPad> {
       constraints: _constraints,
       child: KeyboardListener(
           focusNode: keyboardFocusNode,
-          onKeyEvent: (value) {
+          onKeyEvent: (event) {
             if (inputFocusNode.hasFocus) return;
 
+            if (event is KeyUpEvent) return;
+
             /// If the user presses number keys, add the number to the text field.
-            if (value.character?.contains(RegExp(r'\d+')) ?? false) {
-              addNumber(num.parse(value.character!));
+            if (event.character?.contains(RegExp(r'\d+')) ?? false) {
+              addNumber(num.parse(event.character!));
             }
 
             /// If the user presses the dot key, add the dot to the text field.
-            if (value.character == '.') addDot();
+            if (event.character == '.') addDot();
 
             /// If the user presses the backspace key, remove the last character
-            if (value.logicalKey == LogicalKeyboardKey.backspace) delete();
+            if (event.logicalKey == LogicalKeyboardKey.backspace) delete();
 
             /// If the user presses the enter key, close the dialog
             /// and return the value.
-            if ((value.logicalKey == LogicalKeyboardKey.enter ||
-                value.logicalKey == LogicalKeyboardKey.numpadEnter)) pop();
+            if ((event.logicalKey == LogicalKeyboardKey.enter ||
+                event.logicalKey == LogicalKeyboardKey.numpadEnter)) pop();
           },
           child: Column(
             children: [
