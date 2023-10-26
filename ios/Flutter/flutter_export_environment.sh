@@ -3,6 +3,7 @@
 export "FLUTTER_ROOT=/Users/tonyfan/Development/flutter"
 export "FLUTTER_APPLICATION_PATH=/Users/tonyfan/Repositories/number_pad"
 export "COCOAPODS_PARALLEL_CODE_SIGN=true"
+export "FLUTTER_TARGET=lib/main.dart"
 export "FLUTTER_BUILD_DIR=build"
 export "FLUTTER_BUILD_NAME=0.0.7"
 export "FLUTTER_BUILD_NUMBER=0.0.7"
