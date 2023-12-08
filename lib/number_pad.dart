@@ -44,6 +44,8 @@ class NumberPad extends StatefulWidget {
   final num? initialValue;
   final String? hintText;
   final BoxConstraints? constraints;
+  final bool withDot = true;
+  final bool withNegative = true;
 
   @override
   State<NumberPad> createState() => _NumberPadState();
@@ -51,10 +53,12 @@ class NumberPad extends StatefulWidget {
 
 class _NumberPadState extends State<NumberPad> {
   late final controller =
-      TextEditingController(text: widget.initialValue?.toString());
+      TextEditingController(text: widget.initialValue?.abs().toString());
   late final keyboardFocusNode = widget.focusNode ?? FocusNode();
   final inputFocusNode = FocusNode();
   late num? _initialValue = widget.initialValue;
+  late bool isNegative =
+      num.tryParse(widget.initialValue?.toString() ?? '')?.isNegative ?? false;
 
   @override
   void initState() {
@@ -109,7 +113,14 @@ class _NumberPadState extends State<NumberPad> {
 
   /// Close the dialog and return the value.
   pop() {
-    Navigator.of(context).maybePop(num.tryParse(controller.text));
+    Navigator.of(context)
+        .maybePop(num.tryParse('${isNegative ? '-' : ''}${controller.text}'));
+  }
+
+  updateNegative() {
+    setState(() {
+      isNegative = !isNegative;
+    });
   }
 
   /// The number button adds a number to the text field.
@@ -189,6 +200,19 @@ class _NumberPadState extends State<NumberPad> {
             children: [
               Expanded(
                 child: Row(children: [
+                  if (widget.withNegative)
+                    IconButton(
+                      onPressed: updateNegative,
+                      icon: isNegative
+                          ? const Icon(
+                              Icons.remove,
+                              size: 30,
+                            )
+                          : const Icon(
+                              Icons.add,
+                              size: 30,
+                            ),
+                    ),
                   Expanded(
                       child: TextField(
                     focusNode: inputFocusNode,
