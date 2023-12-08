@@ -67,9 +67,9 @@ class _NumberPadState extends State<NumberPad> {
   late final keyboardFocusNode = widget.focusNode ?? FocusNode();
   final inputFocusNode = FocusNode();
   late num? _initialValue = widget.initialValue;
-  late bool isNegative =
-      num.tryParse(widget.initialValue?.toString() ?? '')?.isNegative ??
-          widget.isNegative;
+  late bool isNegative = widget.initialValue == null
+      ? widget.isNegative
+      : widget.initialValue! < 0;
 
   @override
   void initState() {
