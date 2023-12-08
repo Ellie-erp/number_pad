@@ -29,6 +29,7 @@ Future<num?> showNumberPad(
                     constraints: constraints,
                     withDot: withDot,
                     withNegative: withNegative,
+                    isNegative: isNegative,
                   )),
             ));
       });
