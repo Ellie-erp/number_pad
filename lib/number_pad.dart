@@ -10,6 +10,9 @@ Future<num?> showNumberPad(
   num? initialValue,
   String? hintText,
   BoxConstraints? constraints,
+  bool withDot = true,
+  bool withNegative = true,
+  bool isNegative = false,
 }) {
   return showDialog(
       context: context,
@@ -23,6 +26,9 @@ Future<num?> showNumberPad(
                     focusNode: focusNode,
                     initialValue: initialValue,
                     hintText: hintText,
+                    constraints: constraints,
+                    withDot: withDot,
+                    withNegative: withNegative,
                   )),
             ));
       });
@@ -38,14 +44,18 @@ class NumberPad extends StatefulWidget {
     this.initialValue,
     this.hintText,
     this.constraints = _constraints,
+    this.withDot = true,
+    this.withNegative = true,
+    this.isNegative = false,
   });
 
   final FocusNode? focusNode;
   final num? initialValue;
   final String? hintText;
   final BoxConstraints? constraints;
-  final bool withDot = true;
-  final bool withNegative = true;
+  final bool withDot;
+  final bool withNegative;
+  final bool isNegative;
 
   @override
   State<NumberPad> createState() => _NumberPadState();
@@ -58,7 +68,8 @@ class _NumberPadState extends State<NumberPad> {
   final inputFocusNode = FocusNode();
   late num? _initialValue = widget.initialValue;
   late bool isNegative =
-      num.tryParse(widget.initialValue?.toString() ?? '')?.isNegative ?? false;
+      num.tryParse(widget.initialValue?.toString() ?? '')?.isNegative ??
+          widget.isNegative;
 
   @override
   void initState() {
