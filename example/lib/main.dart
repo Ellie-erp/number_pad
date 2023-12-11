@@ -24,14 +24,15 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  num? _value;
+  String? _value;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
         child: ElevatedButton(
             onPressed: () async {
-              final result = await showNumberPad(context, initialValue: _value);
+              final result = await showStringNumberPad(context,
+                  initialValue: _value, maxLength: 8);
               setState(() {
                 _value = result;
               });

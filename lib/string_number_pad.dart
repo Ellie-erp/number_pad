@@ -1,22 +1,19 @@
 library number_pad;
 
-export 'string_number_pad.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 /// Show a number pad dialog.
-Future<num?> showNumberPad(
+Future<String?> showStringNumberPad(
   BuildContext context, {
   FocusNode? focusNode,
-  num? initialValue,
+  String? initialValue,
   String? hintText,
   BoxConstraints? constraints,
-  bool withDot = true,
-  bool withNegative = true,
-  bool isNegative = false,
+  int? maxLength,
 }) {
-  return showDialog(
+  return showAdaptiveDialog(
+      barrierDismissible: true,
       context: context,
       builder: (context) {
         return Theme(
@@ -24,14 +21,12 @@ Future<num?> showNumberPad(
             child: Dialog(
               child: Padding(
                   padding: const EdgeInsets.all(20),
-                  child: NumberPad(
+                  child: StringNumberPad(
                     focusNode: focusNode,
                     initialValue: initialValue,
                     hintText: hintText,
                     constraints: constraints,
-                    withDot: withDot,
-                    withNegative: withNegative,
-                    isNegative: isNegative,
+                    maxLength: maxLength,
                   )),
             ));
       });
@@ -40,39 +35,31 @@ Future<num?> showNumberPad(
 const _constraints = BoxConstraints(maxWidth: 500, maxHeight: 500);
 
 /// A number pad dialog.
-class NumberPad extends StatefulWidget {
-  const NumberPad({
+class StringNumberPad extends StatefulWidget {
+  const StringNumberPad({
     super.key,
     this.focusNode,
     this.initialValue,
     this.hintText,
     this.constraints = _constraints,
-    this.withDot = true,
-    this.withNegative = true,
-    this.isNegative = false,
+    this.maxLength,
   });
 
   final FocusNode? focusNode;
-  final num? initialValue;
+  final String? initialValue;
   final String? hintText;
   final BoxConstraints? constraints;
-  final bool withDot;
-  final bool withNegative;
-  final bool isNegative;
+  final int? maxLength;
 
   @override
-  State<NumberPad> createState() => _NumberPadState();
+  State<StringNumberPad> createState() => _StringNumberPadState();
 }
 
-class _NumberPadState extends State<NumberPad> {
-  late final controller =
-      TextEditingController(text: widget.initialValue?.abs().toString());
+class _StringNumberPadState extends State<StringNumberPad> {
+  late final controller = TextEditingController(text: widget.initialValue);
   late final keyboardFocusNode = widget.focusNode ?? FocusNode();
   final inputFocusNode = FocusNode();
-  late num? _initialValue = widget.initialValue;
-  late bool isNegative = widget.initialValue == null
-      ? widget.isNegative
-      : widget.initialValue! < 0;
+  late String? _initialValue = widget.initialValue;
 
   @override
   void initState() {
@@ -85,6 +72,12 @@ class _NumberPadState extends State<NumberPad> {
     inputFocusNode.addListener(() {
       if (!inputFocusNode.hasFocus) {
         keyboardFocusNode.requestFocus();
+      }
+    });
+
+    controller.addListener(() {
+      if (controller.text.length >= widget.maxLength!) {
+        pop();
       }
     });
   }
@@ -127,14 +120,7 @@ class _NumberPadState extends State<NumberPad> {
 
   /// Close the dialog and return the value.
   pop() {
-    Navigator.of(context)
-        .maybePop(num.tryParse('${isNegative ? '-' : ''}${controller.text}'));
-  }
-
-  updateNegative() {
-    setState(() {
-      isNegative = !isNegative;
-    });
+    Navigator.of(context).maybePop(controller.text);
   }
 
   /// The number button adds a number to the text field.
@@ -214,19 +200,6 @@ class _NumberPadState extends State<NumberPad> {
             children: [
               Expanded(
                 child: Row(children: [
-                  if (widget.withNegative)
-                    IconButton(
-                      onPressed: updateNegative,
-                      icon: isNegative
-                          ? const Icon(
-                              Icons.remove,
-                              size: 30,
-                            )
-                          : const Icon(
-                              Icons.add,
-                              size: 30,
-                            ),
-                    ),
                   Expanded(
                       child: TextField(
                     focusNode: inputFocusNode,
@@ -271,7 +244,7 @@ class _NumberPadState extends State<NumberPad> {
               Expanded(
                   child: Row(
                 children: [
-                  Expanded(child: dotButton()),
+                  const Spacer(),
                   Expanded(child: numberButton(0)),
                   Expanded(child: deleteButton()),
                 ],
